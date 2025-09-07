@@ -250,18 +250,18 @@ function PixelUI:SetText(text)
     PixelUI.pixelText:SetText(text)
 end
 
-function PixelUI:SetTitle(title)
-    local color = titleColorMap[title]
-    if color then
-        local r = color["r"]
-        local g = color["g"]
-        local b = color["b"]
-        PixelUI.pixelTexture:SetColorTexture(r / 255, g / 255, b / 255, 1)
-        PixelUI.pixelText:SetText(title)
-    else
-        PixelUI.pixelText:SetText(title)
-    end
-end
+-- function PixelUI:SetTitle(title)
+--     local color = titleColorMap[title]
+--     if color then
+--         local r = color["r"]
+--         local g = color["g"]
+--         local b = color["b"]
+--         PixelUI.pixelTexture:SetColorTexture(r / 255, g / 255, b / 255, 1)
+--         PixelUI.pixelText:SetText(title)
+--     else
+--         PixelUI.pixelText:SetText(title)
+--     end
+-- end
 
 function PixelUI:Init()
     if PixelUI.inited then
@@ -288,11 +288,15 @@ function PixelUI:HandleAction(action1, action2)
         PixelUI:SetText(action2)
     elseif action1 == "cast" then
         local color = titleColorMap[action2]
-        local r = color["r"]
-        local g = color["g"]
-        local b = color["b"]
-        self:SetColor(r, g, b)
-        PixelUI:SetTitle(action2)
+        if color == nil then
+            Utils.Print("未找到宏：" .. action2)
+        else
+            local r = color["r"]
+            local g = color["g"]
+            local b = color["b"]
+            self:SetColor(r, g, b)
+            PixelUI:SetText(action2)
+        end
     elseif action1 == "AssistedCombat" then
         self:SetColor(128, 128, 128)
         PixelUI:SetText(action2)
