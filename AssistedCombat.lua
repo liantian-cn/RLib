@@ -6,6 +6,7 @@ local addonName, RL = ...
 local Player = RL.Player;
 local Target = RL.Target;
 local Action = RL.Action;
+local Spell = RL.Spell;
 
 RL.AssistedCombat = {}
 local AssistedCombat = RL.AssistedCombat
@@ -175,10 +176,27 @@ function AssistedCombat.Rotation()
         return Action:Idle("玩家正在施法")
     end
 
-    local assist, bind = AssistedCombat.getAssistedCombatBind()
-    if assist then
-        return Action:AssistedCombat(bind)
-    else
-        return Action:Idle(bind)
+    -- local assist, bind = AssistedCombat.getAssistedCombatBind()
+    -- if assist then
+    --     return Action:AssistedCombat(bind)
+    -- else
+    --     return Action:Idle(bind)
+    -- end
+
+    local spellID = C_AssistedCombat.GetNextCastSpell()
+    if not spellID then
+        return Action:Idle("一键辅助无反馈")
     end
+    if not Spell(spellID):CooldownUp() then
+        return Action:Idle("技能冷却中")
+    end
+
+    local slots = C_ActionBar.FindSpellActionButtons(spellID)
+    for _, slot in ipairs(slots) do
+        if slot2bind[slot] then
+            return Action:AssistedCombat(slot2bind[slot])
+        end
+    end
+    local spellInfo = C_Spell.GetSpellInfo(spellID)
+    return Action:Idle("Error: " .. spellInfo.name .. " > 未绑定按键")
 end
