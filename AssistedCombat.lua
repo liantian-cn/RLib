@@ -3,6 +3,9 @@
 -- 获取插件名称和全局表
 local addonName, RL = ...
 
+local Player = RL.Player;
+local Target = RL.Target;
+local Action = RL.Action;
 
 RL.AssistedCombat = {}
 local AssistedCombat = RL.AssistedCombat
@@ -112,18 +115,70 @@ end
 --- 获取一键辅助功能推荐施放的技能所绑定的按键
 --- 该函数通过C_AssistedCombat.GetNextCastSpell获取推荐施放的技能ID
 --- 然后查找该技能在动作条中的位置，并返回对应的按键绑定
---- @return string 返回技能绑定的按键名称或提示信息
+--- @return boolean,string 返回技能绑定的按键名称或提示信息
 function AssistedCombat.getAssistedCombatBind()
     local spellID = C_AssistedCombat.GetNextCastSpell()
     if not spellID then
-        return "一键辅助无反馈"
+        return false, "一键辅助无反馈"
     end
     local slots = C_ActionBar.FindSpellActionButtons(spellID)
     for _, slot in ipairs(slots) do
         if slot2bind[slot] then
-            return slot2bind[slot]
+            return true, slot2bind[slot]
         end
     end
     local spellInfo = C_Spell.GetSpellInfo(spellID)
-    return spellInfo.name .. " > 未绑定按键"
+    return false, "Error: " .. spellInfo.name .. " > 未绑定按键"
+end
+
+function AssistedCombat.Rotation()
+    if Player:DebuffExists(432031) or Player:DebuffExists("抓握之血") then
+        return Action:Idle("存在抓握之血")
+    end
+
+    -- 检查是否在坐骑上
+    if IsMounted() then
+        return Action:Idle("载具中")
+    end
+
+    -- 检查是否在载具中
+    if Player:InVehicle() then
+        return Action:Idle("载具中")
+    end
+
+    -- 检查聊天框是否激活
+    if ChatFrame1EditBox:IsVisible() then
+        return Action:Idle("聊天框激活")
+    end
+
+    -- 检查玩家是否死亡或处于灵魂状态
+    if Player:IsDeadOrGhost() then
+        return Action:Idle("玩家已死亡")
+    end
+
+    -- 检查目标是否为玩家（PVP情况）
+    if Target:IsAPlayer() then
+        return Action:Idle("目标是玩家")
+    end
+
+    -- 检查是否有目标
+    if not Target:Exists() then
+        return Action:Idle("目标为空")
+    end
+
+    -- 检查玩家是否在战斗中
+    if not Player:AffectingCombat() then
+        return Action:Idle("玩家不在战斗")
+    end
+
+    if Player:IsCasting() then
+        return Action:Idle("玩家正在施法")
+    end
+
+    local assist, bind = AssistedCombat.getAssistedCombatBind()
+    if assist then
+        return Action:AssistedCombat(bind)
+    else
+        return Action:Idle(bind)
+    end
 end

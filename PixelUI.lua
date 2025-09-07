@@ -169,9 +169,9 @@ local function InitFrame()
     local pixelFrame = CreateFrame("Frame", "PixelUIFrame", UIParent);
     -- 设置框架位置为父框架的左上角，偏移量为(0, 0)
     pixelFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 0, 0);
-    -- 设置框架大小为16x16像素
+    -- 设置框架大小为24x24像素
     local screenHeight = select(2, GetPhysicalScreenSize())
-    local pixelSize = 16 * (768 / screenHeight) / uiScale
+    local pixelSize = 24 * (768 / screenHeight) / uiScale
     pixelFrame:SetSize(pixelSize, pixelSize);
 
     -- 为框架创建一个纹理对象
@@ -185,20 +185,21 @@ local function InitFrame()
     -- 设置文本相对于pixelFrame的位置，位于其右侧，偏移量为(0, 0)
     -- 设置文本区域大小为208x16像素
     local pixelText = pixelFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal");
-    local textWidth = 208 * (768 / screenHeight) / uiScale
-    local textHeight = 16 * (768 / screenHeight) / uiScale
+    local textWidth = 300 * (768 / screenHeight) / uiScale
+    local textHeight = 24 * (768 / screenHeight) / uiScale
     pixelText:SetPoint("LEFT", pixelFrame, "RIGHT", 0, 0);
     pixelText:SetSize(textWidth, textHeight);
     -- pixelText:SetFont("Fonts\\ARIALN.TTF", 14, nil);
     pixelText:SetText("Default Text");
     pixelText:SetJustifyH("CENTER");
     pixelText:SetJustifyV("MIDDLE");
-    pixelText:SetTextColor(255 / 255, 64 / 255, 64 / 255, 1);
+    pixelText:SetFont("Fonts\\ARIALN.TTF", 12, "")
+    pixelText:SetTextColor(0, 0, 0, 1);
 
     -- 为pixelText添加黑色背景
     local textBackground = pixelFrame:CreateTexture(nil, "BACKGROUND");
     textBackground:SetAllPoints(pixelText);
-    textBackground:SetColorTexture(0, 0, 0, 1); -- 黑色不透明背景
+    textBackground:SetColorTexture(1, 1, 1, 1);
 
     -- 将创建的pixelFrame保存到PixelUI.pixelFrame变量中
     PixelUI.pixelFrame = pixelFrame;

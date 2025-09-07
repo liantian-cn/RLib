@@ -103,8 +103,7 @@ function RL.TickUpdate()
             end
         else -- 当没有加载到可用Rotation时
             if RLib_SavedVar.enablePixelUI then
-                action1 = "AssistedCombat"
-                action2 = AssistedCombat.getAssistedCombatBind()
+                action1, action2 = AssistedCombat.Rotation()
                 RL.PixelUI:HandleAction(action1, action2)
             end
         end

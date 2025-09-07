@@ -13,3 +13,7 @@ end
 function RL.Action:Idle(text)
     return "idle", text
 end
+
+function RL.Action:AssistedCombat(text)
+    return "AssistedCombat", text
+end
