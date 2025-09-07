@@ -58,6 +58,7 @@ do
     end
     local function SetValue(value)
         RLib_SavedVar.enablePixelUI = value
+        C_UI.Reload()
     end
     if not RLib_SavedVar.enablePixelUI then
         RLib_SavedVar.enablePixelUI = false
