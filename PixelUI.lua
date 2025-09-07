@@ -163,12 +163,16 @@ keyColorMap[144] = { ["key"] = "ALT-SHIFT-]", ["r"] = 252, ["g"] = 163, ["b"] = 
 keyColorMap[145] = { ["key"] = "ALT-SHIFT-=", ["r"] = 207, ["g"] = 105, ["b"] = 133 }
 
 local function InitFrame()
+    local uiScale = UIParent:GetEffectiveScale()
+
     -- 创建一个框架作为像素UI的基础框架，命名为"PixelUIFrame"，父框架为UIParent
     local pixelFrame = CreateFrame("Frame", "PixelUIFrame", UIParent);
     -- 设置框架位置为父框架的左上角，偏移量为(0, 0)
     pixelFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 0, 0);
     -- 设置框架大小为16x16像素
-    pixelFrame:SetSize(16, 16);
+    local screenHeight = select(2, GetPhysicalScreenSize())
+    local pixelSize = 16 * (768 / screenHeight) / uiScale
+    pixelFrame:SetSize(pixelSize, pixelSize);
 
     -- 为框架创建一个纹理对象
     local pixelTexture = pixelFrame:CreateTexture();
@@ -181,8 +185,10 @@ local function InitFrame()
     -- 设置文本相对于pixelFrame的位置，位于其右侧，偏移量为(0, 0)
     -- 设置文本区域大小为208x16像素
     local pixelText = pixelFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal");
+    local textWidth = 208 * (768 / screenHeight) / uiScale
+    local textHeight = 16 * (768 / screenHeight) / uiScale
     pixelText:SetPoint("LEFT", pixelFrame, "RIGHT", 0, 0);
-    pixelText:SetSize(208, 16);
+    pixelText:SetSize(textWidth, textHeight);
     -- pixelText:SetFont("Fonts\\ARIALN.TTF", 14, nil);
     pixelText:SetText("Default Text");
     pixelText:SetJustifyH("CENTER");
@@ -252,7 +258,6 @@ function PixelUI:SetTitle(title)
         PixelUI.pixelTexture:SetColorTexture(r / 255, g / 255, b / 255, 1)
         PixelUI.pixelText:SetText(title)
     else
-        PixelUI.pixelTexture:SetColorTexture(1, 1, 1, 1)
         PixelUI.pixelText:SetText(title)
     end
 end
@@ -278,8 +283,8 @@ function PixelUI:HandleAction(action1, action2)
     end
 
     if action1 == "idle" then
-        self:SetColor(0, 0, 0)
-        PixelUI:SetTitle(action2)
+        self:SetColor(255, 255, 255)
+        PixelUI:SetText(action2)
     elseif action1 == "cast" then
         local color = titleColorMap[action2]
         local r = color["r"]
@@ -288,16 +293,16 @@ function PixelUI:HandleAction(action1, action2)
         self:SetColor(r, g, b)
         PixelUI:SetTitle(action2)
     elseif action1 == "AssistedCombat" then
-        self:SetColor(86, 9, 9)
-        PixelUI:SetTitle(action2)
+        self:SetColor(128, 128, 128)
+        PixelUI:SetText(action2)
     end
 end
 
 function PixelUI:Delay(time)
     time = tonumber(time)
     self.delay_time = GetTime() + time
-    self:SetColor(0, 0, 0)
-    PixelUI:SetTitle("Delay:" .. tostring(time))
+    self:SetColor(255, 255, 255)
+    PixelUI:SetText("Delay:" .. tostring(time))
 end
 
 SLASH_PHRASE1 = "/delay";
