@@ -229,8 +229,9 @@ local function InitMacroButton()
         frame:SetAttribute("macrotext", macrotext)
         frame:RegisterForClicks("AnyDown", "AnyUp")
         SetOverrideBindingClick(frame, true, key, buttonName)
-        Utils.Print(string.format("已绑定宏 %s 到 %s", title, key))
+        -- Utils.Print(string.format("已绑定宏 %s 到 %s", title, key))
     end
+    Utils.Print("已绑定宏，数量：" .. tostring(#macros))
 end
 
 

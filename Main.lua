@@ -24,12 +24,21 @@ end
 
 function MainFrame:PLAYER_ENTERING_WORLD(isInitialLogin, isReloadingUi)
     local className, classFilename, _ = UnitClass("player")
-    if RL.Rotation[classFilename] == nil then
-        print("没有为 " .. className .. " 设计的Rotation，会使用默认Rotation")
-    else
-        RL.Rotation.MainRotation = RL.Rotation[classFilename]
-        RL.Rotation.MainRotation:Init()
+
+    for rotationAddonName, customRotation in pairs(RL.Rotation) do
+        local check = customRotation:Check()
+        -- Utils.Print("Check Rotation: " .. rotationAddonName)
+        -- Utils.Print("Check Result: " .. tostring(check))
+        if customRotation:Check() then
+            RL.Rotation.MainRotation = customRotation
+            RL.Rotation.MainRotationName = rotationAddonName
+            Utils.Print("Loaded Rotation: " .. rotationAddonName)
+            customRotation:Init()
+            break
+        end
     end
+
+
 
     if RLib_SavedVar.enablePixelUI then
         RL.PixelUI:Init()
