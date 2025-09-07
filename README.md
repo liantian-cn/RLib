@@ -10,7 +10,7 @@
 
 ## 性能
 
-
+## 使用
 
 ### 例1: 饰品检测
 
@@ -110,3 +110,9 @@ Lib.Rotation.PALADIN = Rotation
 2. 每个rotation包含一个Init()函数，和一个Run函数。
 Run函数返回一个字符串值，表示当前rotation的输出。
 
+## PixelUI
+
+内置一个像素bot示例，可以在设置菜单打开。
+
+执行这个内置bot，可参考
+https://github.com/liantian-cn/RLib_PixelRunner
