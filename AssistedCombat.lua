@@ -176,13 +176,6 @@ function AssistedCombat.Rotation()
         return Action:Idle("玩家正在施法")
     end
 
-    -- local assist, bind = AssistedCombat.getAssistedCombatBind()
-    -- if assist then
-    --     return Action:AssistedCombat(bind)
-    -- else
-    --     return Action:Idle(bind)
-    -- end
-
     local spellID = C_AssistedCombat.GetNextCastSpell()
     if not spellID then
         return Action:Idle("一键辅助无反馈")
