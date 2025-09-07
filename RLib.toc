@@ -1,0 +1,49 @@
+
+## Interface: 110207
+## Title: |cffff5900R|cffffb300L|cfff0ff00i|cff96ff00b|cffff5900 Core
+## Notes: 神秘插件.
+## Version: 2025.07.27
+## Author: liantian-cn
+## IconAtlas: questlog-questtypeicon-weekly
+## SavedVariables: RLib_SavedVar
+
+# LibStub
+Libs\LibStub\LibStub.lua
+Libs\LibRangeCheck-3.0\LibRangeCheck-3.0.lua
+
+# Utils
+Utils.lua
+Action.lua
+
+# API
+Settings.lua
+Core.lua
+
+# List
+List.lua
+
+# Unit
+Unit.lua
+Unit_Aura.lua
+Unit_Player.lua
+Unit_Party.lua
+
+# Spell
+Spell.lua
+
+# Item
+Item.lua
+
+# Plater
+Plater.lua
+
+# PixelUI
+PixelUI.lua
+
+# Combat
+Combat.lua
+
+# AssistedCombat
+AssistedCombat.lua
+
+Main.lua
