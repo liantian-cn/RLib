@@ -49,6 +49,7 @@ local function getCastingInfo(targetUnit)
     return isCasting, isChanneling, notInterruptible, spellID, spellName, spellStartTime, spellEndTime;
 end
 
+-- GetCastingInfo = getCastingInfo
 
 --- 根据技能列表判断是否可以打断
 --- @param spellID number 技能ID
@@ -382,7 +383,7 @@ end
 --- @return boolean 正在施法返回true，否则返回false
 function Unit:IsCasting()
     if self.use_cache then
-        return Utils.IntToBool(self._isCasting or self._isChanneling)
+        return Utils.IntToBool(self._isCasting) or Utils.IntToBool(self._isChanneling)
     end
     local isCasting, isChanneling, notInterruptible, spellID, spellName, spellStartTime, spellEndTime = getCastingInfo(self:ID())
     return isCasting or isChanneling
