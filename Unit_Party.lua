@@ -19,6 +19,7 @@ local function calculatePartyHealthScore()
         for i = 1, numGroupMembers do
             local unitName = "party" .. i
             local unit = NewUnit(unitName, true)
+            unit:refreshStatus()
             table.insert(partyMembers, unit)
         end
     end
@@ -58,7 +59,7 @@ function Party:FindMemberWithMostDebuffsByType(dispelTypes, minCount)
         if member:IsAlive() then
             -- 获取该成员的指定类型debuff数量
             local debuffCount = member:DispelDebuffCount(dispelTypes)
-
+            -- print("debuffCount: " .. debuffCount .. "member: " .. member:ID())
             -- 如果该成员的debuff数量大于等于要求的最小数量，并且比当前最大值更大
             if debuffCount >= minCount then
                 local memberHealthPercentage = member:RelativeHealthPercentage()
