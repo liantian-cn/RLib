@@ -9,6 +9,8 @@ local Player = RL.Player
 RL.Combat = {}
 local Combat = RL.Combat
 
+Combat.EstimatedFrame = nil
+Combat.EstimatedText = nil;
 
 Combat.InCombat = false;
 Combat.EntryCombatTime = nil;
@@ -80,4 +82,41 @@ function Combat:EstimatedTimeToKill()
 
     -- 如果无法计算，返回0
     return 0
+end
+
+function Combat:InitEstimatedFrame()
+    Combat.EstimatedFrame = CreateFrame("Frame", nil, UIParent)
+    Combat.EstimatedFrame:SetSize(64, 24)
+    Combat.EstimatedFrame:SetPoint("CENTER", UIParent, "CENTER", UIParent:GetWidth() / 4, 0)
+    Combat.EstimatedFrame:EnableMouse(true)
+    Combat.EstimatedFrame:SetMovable(true)
+    Combat.EstimatedFrame:RegisterForDrag("LeftButton")
+    local tex = Combat.EstimatedFrame:CreateTexture()
+    tex:SetAllPoints()
+    tex:SetColorTexture(0, 0, 0, 1)
+    Combat.EstimatedText = Combat.EstimatedFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    Combat.EstimatedText:SetSize(64, 24)
+    Combat.EstimatedText:SetPoint("LEFT", Combat.EstimatedFrame, "LEFT", 0, 0)
+    Combat.EstimatedText:SetFont("Fonts\\ARIALN.TTF", 14, nil)
+    Combat.EstimatedText:SetTextColor(1, 1, 1)
+    Combat.EstimatedText:SetJustifyH("CENTER")
+    Combat.EstimatedText:SetJustifyV("MIDDLE")
+    Combat.EstimatedText:SetText("0")
+    -- 处理框架拖动开始事件
+    Combat.EstimatedFrame:SetScript("OnDragStart", function(self)
+        self:StartMoving()
+    end)
+
+    -- 处理框架拖动结束事件
+    Combat.EstimatedFrame:SetScript("OnDragStop", function(self)
+        self:StopMovingOrSizing()
+    end)
+end
+
+function Combat:UpdateEstimatedText()
+    if not Combat.EstimatedFrame then
+        return
+    end
+    local estimatedTime = Combat:EstimatedTimeToKill()
+    Combat.EstimatedText:SetText(string.format("%.1f", estimatedTime))
 end

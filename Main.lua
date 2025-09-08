@@ -38,7 +38,9 @@ function MainFrame:PLAYER_ENTERING_WORLD(isInitialLogin, isReloadingUi)
         end
     end
 
-
+    if RLib_SavedVar.enableEstimatedFrame then
+        RL.Combat:InitEstimatedFrame()
+    end
 
     if RLib_SavedVar.enablePixelUI then
         RL.PixelUI:Init()
@@ -82,6 +84,7 @@ function RL.refreshAll()
     RL.updateGcdRemaining()
     RL.refreshParty()
     RL.Combat:TickUpdate();
+    RL.Combat:UpdateEstimatedText()
 end
 
 local tickTimer = GetTime()

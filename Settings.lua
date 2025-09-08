@@ -97,6 +97,24 @@ do
     Settings.CreateSlider(category, setting, options, tooltip)
 end
 
+do
+    local variable = "enableEstimatedFrame"
+    local name = "剩余战斗时间计时器"
+    local tooltip = "一个可拖动的计时器，显示剩余时间"
+    local defaultValue = false
+    local function GetValue()
+        return RLib_SavedVar.enableEstimatedFrame or defaultValue
+    end
+    local function SetValue(value)
+        RLib_SavedVar.enableEstimatedFrame = value
+        C_UI.Reload()
+    end
+    if not RLib_SavedVar.enableEstimatedFrame then
+        RLib_SavedVar.enableEstimatedFrame = false
+    end
+    local setting = Settings.RegisterProxySetting(category, variable, type(defaultValue), name, defaultValue, GetValue, SetValue)
+    Settings.CreateCheckbox(category, setting, tooltip)
+end
 
 
 
