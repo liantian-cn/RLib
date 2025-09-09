@@ -213,11 +213,11 @@ if target:CanBeAttackedByPlayer() then
 end
 ```
 
-#### :IsAPlayer()
+#### :IsPlayer()
 检查单位是否为玩家
 
 ```lua
-if target:IsAPlayer() then
+if target:IsPlayer() then
     -- 目标是玩家
 end
 ```

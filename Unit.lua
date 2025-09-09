@@ -227,7 +227,7 @@ end
 
 --- 检查单位是否为玩家
 --- @return boolean 是玩家返回true，否则返回false
-function Unit:IsAPlayer()
+function Unit:IsPlayer()
     return UnitIsPlayer(self._unitID)
 end
 

@@ -85,6 +85,9 @@ function Combat:EstimatedTimeToKill()
 end
 
 function Combat:InitEstimatedFrame()
+    if Combat.EstimatedFrame then
+        return
+    end
     Combat.EstimatedFrame = CreateFrame("Frame", nil, UIParent)
     Combat.EstimatedFrame:SetSize(64, 24)
     Combat.EstimatedFrame:SetPoint("CENTER", UIParent, "CENTER", UIParent:GetWidth() / 4, 0)
