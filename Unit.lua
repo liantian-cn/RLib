@@ -497,6 +497,24 @@ function Unit:HolyPower()
     return UnitPower(self:ID(), Enum.PowerType.HolyPower)
 end
 
+--- 获取单位当前恶魔之怒
+--- @return number 当前法力值
+function Unit:Fury()
+    return UnitPower(self:ID(), Enum.PowerType.Fury)
+end
+
+--- 获取单位最大恶魔之怒
+--- @return number 恶魔之怒
+function Unit:FuryMax()
+    return UnitPowerMax(self:ID(), Enum.PowerType.Fury)
+end
+
+--- 恶魔之怒消耗
+---@return number
+function Unit:FuryDeficit()
+    return self:FuryMax() - self:Fury()
+end
+
 --- 刷新单位状态信息
 --- 更新单位的所有缓存信息，包括生命值、施法状态、距离等
 function Unit:refreshStatus()
