@@ -25,7 +25,6 @@ List.lua
 # Unit
 Unit.lua
 Unit_Aura.lua
-Unit_New.lua
 Unit_Player.lua
 Unit_Party.lua
 

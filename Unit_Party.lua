@@ -19,6 +19,8 @@ local function calculatePartyHealthScore()
         for i = 1, numGroupMembers do
             local unitName = "party" .. i
             local unit = NewUnit(unitName, true)
+            unit:refreshStatus()
+            unit:refreshAura()
             table.insert(partyMembers, unit)
         end
     end
