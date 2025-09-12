@@ -8,7 +8,7 @@ local Utils = RL.Utils
 RL.MainFrame = CreateFrame("Frame", "RLib_MainFrame", UIParent)
 
 local MainFrame = RL.MainFrame
-local AssistedCombat = RL.AssistedCombat
+-- local AssistedCombat = RL.AssistedCombat
 
 
 --- ============================ HANDLE ============================
@@ -16,7 +16,8 @@ local AssistedCombat = RL.AssistedCombat
 
 RL.Handers = {}
 RL.Rotation = {}
-
+RL.Rotation.MainRotation = nil
+RL.Rotation.MainRotationName = nil
 
 function MainFrame:ADDON_LOADED(addOnName, containsBindings)
     return
@@ -25,17 +26,34 @@ end
 function MainFrame:PLAYER_ENTERING_WORLD(isInitialLogin, isReloadingUi)
     local className, classFilename, _ = UnitClass("player")
 
+
     for rotationAddonName, customRotation in pairs(RL.Rotation) do
-        local check = customRotation:Check()
-        -- Utils.Print("Check Rotation: " .. rotationAddonName)
-        -- Utils.Print("Check Result: " .. tostring(check))
-        if customRotation:Check() then
-            RL.Rotation.MainRotation = customRotation
-            RL.Rotation.MainRotationName = rotationAddonName
-            Utils.Print("Loaded Rotation: " .. rotationAddonName)
-            customRotation:Init()
-            break
+        if rotationAddonName ~= "RLib_AssistedCombat" then
+            local check = customRotation:Check()
+            if check then
+                RL.Rotation.MainRotation = customRotation
+                RL.Rotation.MainRotationName = rotationAddonName
+                Utils.Print("Rotation Use: " .. rotationAddonName)
+                break
+            end
         end
+    end
+
+    if RL.Rotation.MainRotation == nil then
+        Utils.Print("Custom Rotation Not Found")
+        if RL.Rotation["RLib_AssistedCombat"] ~= nil then
+            local customRotation = RL.Rotation["RLib_AssistedCombat"]
+            local check = customRotation:Check()
+            if check then
+                RL.Rotation.MainRotation = customRotation
+                RL.Rotation.MainRotationName = RLib_AssistedCombat
+                Utils.Print("Rotation Use: RLib_AssistedCombat")
+            end
+        end
+    end
+
+    if RL.Rotation.MainRotation ~= nil then
+        RL.Rotation.MainRotation:Init()
     end
 
     if RLib_SavedVar.enableEstimatedFrame then
@@ -48,11 +66,11 @@ function MainFrame:PLAYER_ENTERING_WORLD(isInitialLogin, isReloadingUi)
 end
 
 function MainFrame:PLAYER_LOGIN()
-    AssistedCombat.updateBind()
+    -- AssistedCombat.updateBind()
 end
 
 function MainFrame:ACTIONBAR_SLOT_CHANGED(slot)
-    AssistedCombat.updateBind()
+    -- AssistedCombat.updateBind()
 end
 
 --- ============================ REFRESH ============================
@@ -95,20 +113,10 @@ function RL.TickUpdate()
         tickTimer = GetTime() + tickOffset
         RL.refreshAll()
 
-
         local action1, action2 = nil, nil
-        -- print(GetTime())
-        if (RL.Rotation.MainRotation ~= nil) and (RL.Rotation.MainRotation.Main ~= nil) then
+        if (RL.Rotation.MainRotation ~= nil) and RLib_SavedVar.enablePixelUI then
             action1, action2 = RL.Rotation.MainRotation.Main()
-
-            if RLib_SavedVar.enablePixelUI then
-                RL.PixelUI:HandleAction(action1, action2)
-            end
-        else -- 当没有加载到可用Rotation时
-            if RLib_SavedVar.enablePixelUI then
-                action1, action2 = AssistedCombat.Rotation()
-                RL.PixelUI:HandleAction(action1, action2)
-            end
+            RL.PixelUI:HandleAction(action1, action2)
         end
     end
 end

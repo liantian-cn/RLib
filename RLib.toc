@@ -43,7 +43,4 @@ PixelUI.lua
 # Combat
 Combat.lua
 
-# AssistedCombat
-AssistedCombat.lua
-
 Main.lua
