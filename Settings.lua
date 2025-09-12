@@ -20,7 +20,7 @@ do
     local maxValue = 60
     local step = 1
     local function GetValue()
-        return RLib_SavedVar.fps or defaultValue
+        return RLib_SavedVar.fps
     end
 
     local function SetValue(value)
@@ -46,7 +46,7 @@ do
     local tooltip = "启动pixel UI，需要reload后生效"
     local defaultValue = false
     local function GetValue()
-        return RLib_SavedVar.enablePixelUI or defaultValue
+        return RLib_SavedVar.enablePixelUI
     end
     local function SetValue(value)
         RLib_SavedVar.enablePixelUI = value
@@ -70,7 +70,7 @@ do
     local maxValue = SpellQueueWindow * 2
     local step = 5
     local function GetValue()
-        return RLib_SavedVar.latencyToleranceWindow or defaultValue
+        return RLib_SavedVar.latencyToleranceWindow
     end
 
     local function SetValue(value)
@@ -95,7 +95,7 @@ do
     local tooltip = "一个可拖动的计时器，显示剩余时间"
     local defaultValue = false
     local function GetValue()
-        return RLib_SavedVar.enableEstimatedFrame or defaultValue
+        return RLib_SavedVar.enableEstimatedFrame
     end
     local function SetValue(value)
         RLib_SavedVar.enableEstimatedFrame = value
@@ -140,7 +140,7 @@ do
     local maxValue = 70
     local step = 5
     local function GetValue()
-        return RLib_SavedVar.INTERRUPT_CAST or defaultValue
+        return RLib_SavedVar.INTERRUPT_CAST
     end
 
     local function SetValue(value)
@@ -166,7 +166,7 @@ do
     local maxValue = 70
     local step = 5
     local function GetValue()
-        return RLib_SavedVar.INTERRUPT_CHANNEL or defaultValue
+        return RLib_SavedVar.INTERRUPT_CHANNEL
     end
 
     local function SetValue(value)
