@@ -11,7 +11,6 @@ local Unit = RL.Class.Unit
 local List = RL.List
 --- ============================ CONTENT ============================
 
-
 --- 刷新单位的光环信息
 --- @return nil 无返回值
 function Unit:refreshAura()
@@ -62,7 +61,6 @@ local function findAura(auras, spellIdentifier, fromPlayer)
     end
     return nil
 end
-
 
 --- 检查当前单位是否拥有指定增益效果
 --- @param spellIdentifier number|string 法术标识符(名称或ID)

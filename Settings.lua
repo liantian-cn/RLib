@@ -8,6 +8,14 @@ if RLib_SavedVar == nil then
 end
 
 
+
+
+local function OnSettingChanged(setting, value)
+    -- This callback will be invoked whenever a setting is modified.
+    print("Setting changed:", setting:GetVariable(), value)
+end
+
+
 local category = Settings.RegisterVerticalLayoutCategory("RLib")
 Settings.RegisterAddOnCategory(category)
 
@@ -20,7 +28,7 @@ do
     local maxValue = 60
     local step = 1
     local function GetValue()
-        return RLib_SavedVar.fps
+        return RLib_SavedVar.fps or defaultValue
     end
 
     local function SetValue(value)
@@ -46,7 +54,7 @@ do
     local tooltip = "启动pixel UI，需要reload后生效"
     local defaultValue = false
     local function GetValue()
-        return RLib_SavedVar.enablePixelUI
+        return RLib_SavedVar.enablePixelUI or defaultValue
     end
     local function SetValue(value)
         RLib_SavedVar.enablePixelUI = value
@@ -70,7 +78,7 @@ do
     local maxValue = SpellQueueWindow * 2
     local step = 5
     local function GetValue()
-        return RLib_SavedVar.latencyToleranceWindow
+        return RLib_SavedVar.latencyToleranceWindow or defaultValue
     end
 
     local function SetValue(value)
@@ -95,7 +103,7 @@ do
     local tooltip = "一个可拖动的计时器，显示剩余时间"
     local defaultValue = false
     local function GetValue()
-        return RLib_SavedVar.enableEstimatedFrame
+        return RLib_SavedVar.enableEstimatedFrame or defaultValue
     end
     local function SetValue(value)
         RLib_SavedVar.enableEstimatedFrame = value
@@ -110,7 +118,22 @@ end
 
 
 
+-- do
+--     -- RegisterAddOnSetting example. This will read/write the setting directly
+--     -- to `RLib_SavedVar.toggle`.
 
+--     local name = "Test Checkbox"
+--     local variable = "MyAddOn_Toggle"
+--     local variableKey = "toggle"
+--     local variableTbl = RLib_SavedVar
+--     local defaultValue = false
+
+--     local setting = Settings.RegisterAddOnSetting(category, variable, variableKey, variableTbl, type(defaultValue), name, defaultValue)
+--     setting:SetValueChangedCallback(OnSettingChanged)
+
+--     local tooltip = "This is a tooltip for the checkbox."
+--     Settings.CreateCheckbox(category, setting, tooltip)
+-- end
 
 -- do
 --     local variable = "selection"
@@ -131,54 +154,27 @@ end
 -- end
 
 
-do
-    local variable = "INTERRUPT_CAST"
-    local name = "打断延迟"
-    local tooltip = "在读条多少后打断，当为0时秒断"
-    local defaultValue = 30
-    local minValue = 0
-    local maxValue = 70
-    local step = 5
-    local function GetValue()
-        return RLib_SavedVar.INTERRUPT_CAST
-    end
+-- do
+--     local name = "Test Slider"
+--     local variable = "MyAddOn_Slider"
+--     local variableKey = "slider"
+--     local defaultValue = 180
+--     local minValue = 90
+--     local maxValue = 360
+--     local step = 10
+--     local function GetValue()
+--         return RLib_SavedVar.slider or defaultValue
+--     end
 
-    local function SetValue(value)
-        RLib_SavedVar.INTERRUPT_CAST = value
-    end
+--     local function SetValue(value)
+--         RLib_SavedVar.slider = value
+--     end
 
-    if not RLib_SavedVar.INTERRUPT_CAST then
-        RLib_SavedVar.INTERRUPT_CAST = defaultValue
-    end
+--     local setting = Settings.RegisterProxySetting(category, variable, type(defaultValue), name, defaultValue, GetValue, SetValue)
+--     setting:SetValueChangedCallback(OnSettingChanged)
 
-    local setting = Settings.RegisterProxySetting(category, variable, type(defaultValue), name, defaultValue, GetValue, SetValue)
-    local options = Settings.CreateSliderOptions(minValue, maxValue, step)
-    options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
-    Settings.CreateSlider(category, setting, options, tooltip)
-end
-
-do
-    local variable = "INTERRUPT_CHANNEL"
-    local name = "打断延迟(通道法术)"
-    local tooltip = "在读条多少后打断，当为0时秒断"
-    local defaultValue = 10
-    local minValue = 0
-    local maxValue = 70
-    local step = 5
-    local function GetValue()
-        return RLib_SavedVar.INTERRUPT_CHANNEL
-    end
-
-    local function SetValue(value)
-        RLib_SavedVar.INTERRUPT_CHANNEL = value
-    end
-
-    if not RLib_SavedVar.INTERRUPT_CHANNEL then
-        RLib_SavedVar.INTERRUPT_CHANNEL = defaultValue
-    end
-
-    local setting = Settings.RegisterProxySetting(category, variable, type(defaultValue), name, defaultValue, GetValue, SetValue)
-    local options = Settings.CreateSliderOptions(minValue, maxValue, step)
-    options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
-    Settings.CreateSlider(category, setting, options, tooltip)
-end
+--     local tooltip = "This is a tooltip for the slider."
+--     local options = Settings.CreateSliderOptions(minValue, maxValue, step)
+--     options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
+--     Settings.CreateSlider(category, setting, options, tooltip)
+-- end
