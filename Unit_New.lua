@@ -62,7 +62,7 @@ function Unit:new(UnitID, use_cache)
     obj._unitID = UnitID
     obj._unitExists = false
     obj:init()
-    if not obj.use_cache then
+    if obj.use_cache then
         obj:refreshStatus()
         obj:refreshAura()
     end
