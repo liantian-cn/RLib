@@ -7,6 +7,7 @@ local LibRangeCheck = LibStub:GetLibrary("LibRangeCheck-3.0", true)
 
 local Utils = RL.Utils;
 local List = RL.List;
+local settings = RLib_SavedVar
 
 --- ============================ CONTENT ============================
 
@@ -76,7 +77,11 @@ end
 --- @param notInterruptible boolean 是否为不可打断技能
 --- @return boolean 如果应该打断返回true，否则返回false
 local function shouldInterrupt(spellID, spellName, notInterruptible)
-    return checkInterruptible(spellID, spellName, notInterruptible) == 2
+    if settings.INTERRUPT_ANY then
+        return checkInterruptible(spellID, spellName, notInterruptible) > 0
+    else
+        return checkInterruptible(spellID, spellName, notInterruptible) == 2
+    end
 end
 
 

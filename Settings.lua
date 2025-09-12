@@ -35,8 +35,8 @@ do
         RLib_SavedVar.fps = value
     end
 
-    if not RLib_SavedVar.fps then
-        RLib_SavedVar.fps = 15
+    if RLib_SavedVar.fps == nil then
+        RLib_SavedVar.fps = defaultValue
     end
 
     local setting = Settings.RegisterProxySetting(category, variable, type(defaultValue), name, defaultValue, GetValue, SetValue)
@@ -54,14 +54,14 @@ do
     local tooltip = "启动pixel UI，需要reload后生效"
     local defaultValue = false
     local function GetValue()
-        return RLib_SavedVar.enablePixelUI or defaultValue
+        return RLib_SavedVar.enablePixelUI
     end
     local function SetValue(value)
         RLib_SavedVar.enablePixelUI = value
         C_UI.Reload()
     end
-    if not RLib_SavedVar.enablePixelUI then
-        RLib_SavedVar.enablePixelUI = false
+    if RLib_SavedVar.enablePixelUI == nil then
+        RLib_SavedVar.enablePixelUI = defaultValue
     end
     local setting = Settings.RegisterProxySetting(category, variable, type(defaultValue), name, defaultValue, GetValue, SetValue)
     Settings.CreateCheckbox(category, setting, tooltip)
@@ -78,15 +78,15 @@ do
     local maxValue = SpellQueueWindow * 2
     local step = 5
     local function GetValue()
-        return RLib_SavedVar.latencyToleranceWindow or defaultValue
+        return RLib_SavedVar.latencyToleranceWindow
     end
 
     local function SetValue(value)
         RLib_SavedVar.latencyToleranceWindow = value
     end
 
-    if not RLib_SavedVar.latencyToleranceWindow then
-        RLib_SavedVar.latencyToleranceWindow = SpellQueueWindow * 1.5
+    if RLib_SavedVar.latencyToleranceWindow == nil then
+        RLib_SavedVar.latencyToleranceWindow = defaultValue
     end
 
     local setting = Settings.RegisterProxySetting(category, variable, type(defaultValue), name, defaultValue, GetValue, SetValue)
@@ -103,19 +103,37 @@ do
     local tooltip = "一个可拖动的计时器，显示剩余时间"
     local defaultValue = false
     local function GetValue()
-        return RLib_SavedVar.enableEstimatedFrame or defaultValue
+        return RLib_SavedVar.enableEstimatedFrame
     end
     local function SetValue(value)
         RLib_SavedVar.enableEstimatedFrame = value
         C_UI.Reload()
     end
-    if not RLib_SavedVar.enableEstimatedFrame then
-        RLib_SavedVar.enableEstimatedFrame = false
+    if RLib_SavedVar.enableEstimatedFrame == nil then
+        RLib_SavedVar.enableEstimatedFrame = defaultValue
     end
     local setting = Settings.RegisterProxySetting(category, variable, type(defaultValue), name, defaultValue, GetValue, SetValue)
     Settings.CreateCheckbox(category, setting, tooltip)
 end
 
+
+do
+    local variable = "INTERRUPT_ANY"
+    local name = "任意打断"
+    local tooltip = "在读条多少后打断，当为0时秒断"
+    local defaultValue = false
+    local function GetValue()
+        return RLib_SavedVar.INTERRUPT_ANY
+    end
+    local function SetValue(value)
+        RLib_SavedVar.INTERRUPT_ANY = value
+    end
+    if RLib_SavedVar.INTERRUPT_ANY == nil then
+        RLib_SavedVar.INTERRUPT_ANY = defaultValue
+    end
+    local setting = Settings.RegisterProxySetting(category, variable, type(defaultValue), name, defaultValue, GetValue, SetValue)
+    Settings.CreateCheckbox(category, setting, tooltip)
+end
 
 
 -- do
