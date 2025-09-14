@@ -57,7 +57,7 @@ end
 --- 刷新单位状态信息
 --- 更新单位的所有缓存信息，包括生命值、施法状态、距离等
 function Unit:refreshStatus()
-    Unit:initStatus()
+    self:initStatus()
     self._unitExists = UnitExists(self._unitID) and UnitIsVisible(self._unitID);
     if not self._unitExists then
         return
