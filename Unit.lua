@@ -325,10 +325,16 @@ end
 --- 获取单位当前生命值百分比，考虑了治疗吸收和受到的治疗。
 --- @return number 生命值百分比(0-100)
 function Unit:RelativeHealthPercentage()
-    if self:MaxHealth() == 0 then
+    local maxHealth = self:MaxHealth() or 1
+    if maxHealth == 0 then
         return 0
     end
-    return (self:Health() - self:HealAbsorbs() + self:InComingHeal()) / self:MaxHealth()
+
+    local health = self:Health() or 0
+    local healAbsorbs = self:HealAbsorbs() or 0
+    local inComingHeal = self:InComingHeal() or 0
+
+    return (health - healAbsorbs + inComingHeal) / maxHealth
 end
 
 --- 检查单位是否死亡或处于灵魂状态
@@ -478,16 +484,24 @@ end
 --- @param range number 距离
 --- @return boolean
 function Unit:InRange(range)
-    return self:MaxRange() <= range
+    local maxRange = self:MaxRange()
+    return maxRange and maxRange <= range or false
 end
 
 --- 检查当前目标是否在近战范围内
 --- @return boolean 如果当前目标在近战范围内且可攻击则返回true，否则返回nil
 function Unit:InMeleeRange()
     if self.use_cache then
+        if self._maxRange == nil then
+            return false
+        end
         return self._maxRange <= 5
     end
-    if self:MaxRange() <= 5 then
+    local maxRange = self:MaxRange()
+    if maxRange == nil then
+        return false
+    end
+    if maxRange <= 5 then
         return true
     end
     return false

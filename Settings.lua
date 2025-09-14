@@ -122,7 +122,7 @@ do
     local defaultValue = 300
     local minValue = 0
     local maxValue = 600
-    local step = 1
+    local step = 50
     local function GetValue()
         return RLib_SavedVar.INTERRUPT_DELAY or defaultValue
     end
