@@ -40,8 +40,6 @@ do
     end
 
     local setting = Settings.RegisterProxySetting(category, variable, type(defaultValue), name, defaultValue, GetValue, SetValue)
-    -- setting:SetValueChangedCallback(OnSettingChanged)
-
     local tooltip = "设置RLib的每秒刷新速度，这将影响CPU占用，默认15"
     local options = Settings.CreateSliderOptions(minValue, maxValue, step)
     options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
@@ -118,13 +116,41 @@ end
 
 
 do
+    local variable = "INTERRUPT_DELAY"
+    local name = "打断延迟"
+    local tooltip = "设置为0的时候秒断，单位毫秒。"
+    local defaultValue = 300
+    local minValue = 0
+    local maxValue = 600
+    local step = 1
+    local function GetValue()
+        return RLib_SavedVar.INTERRUPT_DELAY or defaultValue
+    end
+
+    local function SetValue(value)
+        RLib_SavedVar.INTERRUPT_DELAY = value
+    end
+
+    if RLib_SavedVar.INTERRUPT_DELAY == nil then
+        RLib_SavedVar.INTERRUPT_DELAY = defaultValue
+    end
+    local setting = Settings.RegisterProxySetting(category, variable, type(defaultValue), name, defaultValue, GetValue, SetValue)
+    local options = Settings.CreateSliderOptions(minValue, maxValue, step)
+    options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right);
+    Settings.CreateSlider(category, setting, options, tooltip)
+end
+
+
+do
     local variable = "INTERRUPT_ANY"
     local name = "任意打断"
-    local tooltip = "在读条多少后打断，当为0时秒断"
+    local tooltip = "无所谓白名单，打断任何法术"
     local defaultValue = false
+
     local function GetValue()
         return RLib_SavedVar.INTERRUPT_ANY
     end
+
     local function SetValue(value)
         RLib_SavedVar.INTERRUPT_ANY = value
     end
@@ -134,7 +160,6 @@ do
     local setting = Settings.RegisterProxySetting(category, variable, type(defaultValue), name, defaultValue, GetValue, SetValue)
     Settings.CreateCheckbox(category, setting, tooltip)
 end
-
 
 -- do
 --     -- RegisterAddOnSetting example. This will read/write the setting directly

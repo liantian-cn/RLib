@@ -11,35 +11,7 @@ local Unit = RL.Class.Unit
 local List = RL.List
 --- ============================ CONTENT ============================
 
---- 刷新单位的光环信息
---- @return nil 无返回值
-function Unit:refreshAura()
-    -- 清空现有的Buffs和Debuffs表
-    wipe(self.Buffs)
-    wipe(self.Debuffs)
 
-    -- 获取所有增益效果(Helpful)
-    local i = 1
-    while true do
-        local aura = C_UnitAuras.GetAuraDataByIndex(self:ID(), i, "HELPFUL")
-        if not aura then break end
-
-        -- 将光环信息添加到Buffs表中
-        table.insert(self.Buffs, aura)
-        i = i + 1
-    end
-
-    -- 获取所有减益效果(Harmful)
-    i = 1
-    while true do
-        local aura = C_UnitAuras.GetAuraDataByIndex(self:ID(), i, "HARMFUL")
-        if not aura then break end
-
-        -- 将光环信息添加到Debuffs表中
-        table.insert(self.Debuffs, aura)
-        i = i + 1
-    end
-end
 
 --- 内部辅助函数：查找光环
 --- @param auras table 光环表(Buffs或Debuffs)

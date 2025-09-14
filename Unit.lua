@@ -15,112 +15,124 @@ local Unit = {}
 
 Unit.__index = Unit
 
-
-local function getCastingInfo(targetUnit)
-    local isCasting = false
-    local isChanneling = false
-    local notInterruptible = true
-    local spellID = nil
-    local spellName = nil
-    local spellStartTime = nil
-    local spellEndTime = nil
-
-    -- 检查单位是否正在施法
-    local castName, _, _, castStartTimeMS, castEndTimeMS, _, _, castNotInterruptible, castSpellId = UnitCastingInfo(targetUnit)
-
-    if castName then
-        isCasting = true;
-        notInterruptible = castNotInterruptible;
-        spellID = castSpellId;
-        spellName = castName;
-        spellStartTime = castStartTimeMS;
-        spellEndTime = castEndTimeMS;
-    else
-        -- 检查单位是否正在引导法术
-        local channelName, _, _, channelStartTimeMS, channelEndTimeMS, _, channelNotInterruptible, channelSpellId, _, _ = UnitChannelInfo(targetUnit)
-        if channelName then
-            isChanneling = true;
-            notInterruptible = channelNotInterruptible;
-            spellID = channelSpellId;
-            spellName = channelName;
-            spellStartTime = channelStartTimeMS;
-            spellEndTime = channelEndTimeMS;
-        end
-    end
-    return isCasting, isChanneling, notInterruptible, spellID, spellName, spellStartTime, spellEndTime;
-end
-
--- GetCastingInfo = getCastingInfo
-
---- 根据技能列表判断是否可以打断
---- @param spellID number 技能ID
---- @param spellName string 技能名称
---- @param notInterruptible boolean 是否为不可打断技能
---- @return number 打断判断，小于0则不可打断，1则可打断，2则需要打断
-local function checkInterruptible(spellID, spellName, notInterruptible)
-    if notInterruptible then
-        return -1
-    end
-    if List.interruptBlacklist[spellID] or List.interruptBlacklist[spellName] then
-        return -1
-    end
-    if List.interruptList[spellID] or List.interruptList[spellName] then
-        return 2
-    end
-    return 1
-end
-
-
---- 判断是否应该打断当前施法
---- @param spellID number 技能ID
---- @param spellName string 技能名称
---- @param notInterruptible boolean 是否为不可打断技能
---- @return boolean 如果应该打断返回true，否则返回false
-local function shouldInterrupt(spellID, spellName, notInterruptible)
-    if settings.INTERRUPT_ANY then
-        return checkInterruptible(spellID, spellName, notInterruptible) > 0
-    else
-        return checkInterruptible(spellID, spellName, notInterruptible) == 2
-    end
-end
-
-
---- 判断是否可以打断当前施法
---- @param spellID number 技能ID
---- @param spellName string 技能名称
---- @param notInterruptible boolean 是否为不可打断技能
---- @return boolean 如果可以打断返回true，否则返回false
-local function canInterrupt(spellID, spellName, notInterruptible)
-    return checkInterruptible(spellID, spellName, notInterruptible) > 0
-end
-
-
-function Unit:init()
-    self._unitAlive             = false;
+function Unit:initStatus()
+    self._unitExists            = false;
+    self._unitDead              = nil;
+    self._unitAlive             = nil;
     self._unitGUID              = nil;
     self._unitName              = nil;
+    self._unitServer            = nil;
+    self._role                  = "NONE";
+
     self._canBeAttackedByPlayer = false;
-    self._minRange              = 0;
-    self._maxRange              = 100;
-    self._isCasting             = 0;
-    self._isChanneling          = 0;
-    self._spellInterruptible    = 0;
-    self._canInterrupt          = 0;
-    self._shouldInterrupt       = 0;
+    self._minRange              = nil;
+    self._maxRange              = nil;
+    self._health                = nil;
+    self._healthMax             = nil;
+    self._absorbs               = nil;
+    self._healAbsorbs           = nil;
+    self._inComingHeal          = nil;
+    self._in_combat             = false;
+
+    self._isCasting             = false;
+    self._isChanneling          = false;
+    self._spellnotInterruptible = true
+    self._spellInterruptible    = false;
     self._spellID               = nil;
     self._spellName             = nil;
     self._spellStartTime        = nil;
     self._spellEndTime          = nil;
-    self._health                = 0;
-    self._healthMax             = 1;
-    self._absorbs               = 0;
-    self._healAbsorbs           = 0;
-    self._role                  = "NONE";
-    self._inComingHeal          = 0;
-    self._in_combat             = false;
-    -- 初始化 Buffs 和 Debuffs 表
-    self.Buffs                  = {};
-    self.Debuffs                = {};
+end
+
+function Unit:initAura()
+    self.Buffs   = {};
+    self.Debuffs = {};
+end
+
+function Unit:init()
+    self:initStatus()
+    self:initAura();
+end
+
+--- 刷新单位状态信息
+--- 更新单位的所有缓存信息，包括生命值、施法状态、距离等
+function Unit:refreshStatus()
+    Unit:initStatus()
+    self._unitExists = UnitExists(self._unitID) and UnitIsVisible(self._unitID);
+    if not self._unitExists then
+        return
+    end
+    self._unitDead = UnitIsDeadOrGhost(self._unitID);
+    self._unitAlive = not self._unitDead;
+    self._unitGUID = UnitGUID(self._unitID) or ""
+    self._unitName, self._unitServer = UnitName(self._unitID)
+    self._role = UnitGroupRolesAssigned(self._unitID) or "NONE";
+
+    if self._unitAlive then
+        self._canBeAttackedByPlayer    = UnitCanAttack(self._unitID, "player")
+        self._minRange, self._maxRange = LibRangeCheck:GetRange(self._unitID)
+        self._health                   = UnitHealth(self._unitID) or 0;
+        self._healthMax                = UnitHealthMax(self._unitID) or 1;
+        self._absorbs                  = UnitGetTotalAbsorbs(self._unitID) or 0;
+        self._healAbsorbs              = UnitGetTotalHealAbsorbs(self._unitID) or 0;
+        self._inComingHeal             = UnitGetIncomingHeals(self._unitID, "player") or 0;
+        self._in_combat                = UnitAffectingCombat(self._unitID)
+    end
+
+
+    -- 检查单位是否正在施法
+    local castName, _, _, castStartTimeMS, castEndTimeMS, _, _, castNotInterruptible, castSpellId = UnitCastingInfo(self._unitID)
+
+    if castName then
+        self._isCasting             = true;
+        self._spellnotInterruptible = castNotInterruptible;
+        self._spellID               = castSpellId;
+        self._spellName             = castName;
+        self._spellStartTime        = castStartTimeMS;
+        self._spellEndTime          = castEndTimeMS;
+    else
+        -- 检查单位是否正在引导法术
+        local channelName, _, _, channelStartTimeMS, channelEndTimeMS, _, channelNotInterruptible, channelSpellId, _, _ = UnitChannelInfo(self._unitID)
+        if channelName then
+            self._isChanneling          = true;
+            self._spellnotInterruptible = channelNotInterruptible;
+            self._spellID               = channelSpellId;
+            self._spellName             = channelName;
+            self._spellStartTime        = channelStartTimeMS;
+            self._spellEndTime          = channelEndTimeMS;
+        end
+    end
+    self._spellInterruptible = not self._spellnotInterruptible;
+end
+
+--- 刷新单位的光环信息
+--- @return nil 无返回值
+function Unit:refreshAura()
+    -- 清空现有的Buffs和Debuffs表
+    wipe(self.Buffs)
+    wipe(self.Debuffs)
+
+    -- 获取所有增益效果(Helpful)
+    local i = 1
+    while true do
+        local aura = C_UnitAuras.GetAuraDataByIndex(self._unitID, i, "HELPFUL")
+        if not aura then break end
+
+        -- 将光环信息添加到Buffs表中
+        table.insert(self.Buffs, aura)
+        i = i + 1
+    end
+
+    -- 获取所有减益效果(Harmful)
+    i = 1
+    while true do
+        local aura = C_UnitAuras.GetAuraDataByIndex(self._unitID, i, "HARMFUL")
+        if not aura then break end
+
+        -- 将光环信息添加到Debuffs表中
+        table.insert(self.Debuffs, aura)
+        i = i + 1
+    end
 end
 
 --- 创建一个新的 Unit 对象
@@ -136,6 +148,10 @@ function Unit:new(UnitID, use_cache)
     obj._unitID = UnitID
     obj._unitExists = false
     obj:init()
+    if use_cache then
+        obj:refreshStatus()
+        obj:refreshAura()
+    end
     return obj
 end
 
@@ -387,37 +403,55 @@ end
 --- 检查单位是否正在施法
 --- @return boolean 正在施法返回true，否则返回false
 function Unit:IsCasting()
-    if self.use_cache then
-        return Utils.IntToBool(self._isCasting) or Utils.IntToBool(self._isChanneling)
+    if not self.use_cache then
+        self:refreshStatus()
     end
-    local isCasting, isChanneling, notInterruptible, spellID, spellName, spellStartTime, spellEndTime = getCastingInfo(self:ID())
-    return isCasting or isChanneling
+    return self._isCasting or self._isChanneling
+end
+
+function Unit:InterruptCode()
+    if not self.use_cache then
+        self:refreshStatus()
+    end
+    if not self._canBeAttackedByPlayer then
+        return -1
+    end
+    if not (self._isCasting or self._isChanneling) then
+        return -2
+    end
+    if self._spellnotInterruptible then
+        return -3
+    end
+    local INTERRUPT_DELAY = settings.INTERRUPT_DELAY
+    local INTERRUPT_ANY = settings.INTERRUPT_ANY
+    if INTERRUPT_DELAY ~= 0 then
+        if (GetTime() * 1000 - self._spellStartTime) < INTERRUPT_DELAY then
+            return -4
+        end
+    end
+
+    if List.interruptBlacklist[self._spellID] or List.interruptBlacklist[self._spellName] then
+        return -5
+    end
+    if List.interruptList[self._spellID] or List.interruptList[self._spellName] then
+        return 2
+    end
+    if INTERRUPT_ANY then
+        return 2
+    end
+    return 1
 end
 
 --- 检查单位是否可以打断当前施法
 --- @return boolean 如果正在施法且可以被打断返回true，否则返回false
 function Unit:CanInterrupt()
-    if self.use_cache then
-        return Utils.IntToBool(self._canInterrupt)
-    end
-    local isCasting, isChanneling, notInterruptible, spellID, spellName, spellStartTime, spellEndTime = getCastingInfo(self._unitID)
-    if (isCasting or isChanneling) and spellID and spellName then
-        return canInterrupt(spellID, spellName, notInterruptible)
-    end
-    return false
+    return self:InterruptCode() > 0
 end
 
 --- 检查单位是否应该打断当前施法
 --- @return boolean 如果正在施法且应该被打断返回true，否则返回false
 function Unit:ShouldInterrupt()
-    if self.use_cache then
-        return Utils.IntToBool(self._shouldInterrupt)
-    end
-    local isCasting, isChanneling, notInterruptible, spellID, spellName, spellStartTime, spellEndTime = getCastingInfo(self._unitID)
-    if (isCasting or isChanneling) and spellID and spellName then
-        return shouldInterrupt(spellID, spellName, notInterruptible)
-    end
-    return false
+    return self:InterruptCode() == 2
 end
 
 --- 获取当前目标可攻击的最大距离
@@ -518,57 +552,4 @@ end
 ---@return number
 function Unit:FuryDeficit()
     return self:FuryMax() - self:Fury()
-end
-
---- 刷新单位状态信息
---- 更新单位的所有缓存信息，包括生命值、施法状态、距离等
-function Unit:refreshStatus()
-    self._unitExists = UnitExists(self._unitID) and UnitIsVisible(self._unitID);
-    if not self._unitExists then
-        self:init()
-        return
-    end
-    self._unitAlive = not UnitIsDeadOrGhost(self._unitID);
-    local name, _ = UnitName(self:ID())
-    self._unitName = name or "";
-
-    if self._unitAlive then
-        self._health      = UnitHealth(self._unitID) or 0;
-        self._healthMax   = UnitHealthMax(self._unitID) or 1;
-        self._absorbs     = UnitGetTotalAbsorbs(self._unitID) or 0;
-        self._healAbsorbs = UnitGetTotalHealAbsorbs(self._unitID) or 0;
-    end
-
-    self._role = UnitGroupRolesAssigned(self._unitID) or "NONE";
-    self._inComingHeal = UnitGetIncomingHeals(self._unitID, "player") or 0;
-
-    self._canBeAttackedByPlayer = UnitCanAttack(self._unitID, "player")
-    self._in_combat = UnitAffectingCombat(self._unitID)
-
-    local isCasting, isChanneling, notInterruptible, spellID, spellName, spellStartTime, spellEndTime = getCastingInfo(self._unitID)
-
-    self._isCasting = Utils.BoolToInt(isCasting)
-    self._isChanneling = Utils.BoolToInt(isChanneling)
-    self._spellInterruptible = Utils.BoolToInt(not notInterruptible)
-    self._spellID = spellID;
-    self._spellName = spellName;
-    self._spellStartTime = spellStartTime;
-    self._spellEndTime = spellEndTime;
-
-
-    if not notInterruptible then
-        self._canInterrupt = Utils.BoolToInt(canInterrupt(self._spellID, self._spellName, notInterruptible))
-        self._shouldInterrupt = Utils.BoolToInt(shouldInterrupt(self._spellID, self._spellName, notInterruptible))
-    else
-        self._canInterrupt = 0
-        self._shouldInterrupt = 0
-    end
-
-    local minRange, maxRange = LibRangeCheck:GetRange(self._unitID)
-    if minRange then
-        self._minRange = minRange
-    end
-    if maxRange then
-        self._maxRange = maxRange
-    end
 end

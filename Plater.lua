@@ -36,8 +36,8 @@ function Plater:refresh()
         local plate = namePlates[i]
         local unitID = plate.namePlateUnitToken
         local unit = Unit(unitID, true)
-        unit:refreshStatus()
-        unit:refreshAura()
+        -- unit:refreshStatus()
+        -- unit:refreshAura()
         if unit:Exists() and unit:IsAlive() and unit:CanBeAttackedByPlayer() then
             -- 存储数据到 Plates 表中
             table.insert(self.Plates, unit)

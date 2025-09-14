@@ -4,6 +4,8 @@
 local addonName, RL = ...
 local Unit = RL.Class.Unit
 local Utils = RL.Utils
+local Player = RL.Player
+local Target = RL.Target
 
 RL.MainFrame = CreateFrame("Frame", "RLib_MainFrame", UIParent)
 
@@ -118,6 +120,9 @@ function RL.TickUpdate()
             action1, action2 = RL.Rotation.MainRotation.Main()
             RL.PixelUI:HandleAction(action1, action2)
         end
+        -- if Target:Exists() then
+        --     Utils.Print("Target: " .. Target:Name() .. "InterruptCode" .. Target:InterruptCode())
+        -- end
     end
 end
 
