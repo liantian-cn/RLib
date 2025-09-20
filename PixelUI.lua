@@ -163,10 +163,13 @@ keyColorMap[144] = { ["key"] = "ALT-SHIFT-]", ["r"] = 252, ["g"] = 163, ["b"] = 
 keyColorMap[145] = { ["key"] = "ALT-SHIFT-=", ["r"] = 207, ["g"] = 105, ["b"] = 133 }
 
 local function InitFrame()
-    local uiScale = UIParent:GetEffectiveScale()
+    -- local uiScale = UIParent:GetEffectiveScale()
+    local uiScale = 1
 
     -- 创建一个框架作为像素UI的基础框架，命名为"PixelUIFrame"，父框架为UIParent
-    local pixelFrame = CreateFrame("Frame", "PixelUIFrame", UIParent);
+    -- local pixelFrame = CreateFrame("Frame", "PixelUIFrame", UIParent);
+    local pixelFrame = CreateFrame("Frame", "PixelUIFrame", WorldFrame);
+    -- pixelFrame:SetParent(WorldFrame);
     -- 设置框架位置为父框架的左上角，偏移量为(0, 0)
     pixelFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 0, 0);
     -- 设置框架大小为24x24像素
