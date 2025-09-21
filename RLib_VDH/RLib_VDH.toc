@@ -1,0 +1,13 @@
+
+## Interface: 110207
+## Title: |cffff5900R|cffffb300L|cfff0ff00i|cff96ff00b|cffff5900 复仇DH
+## Version: 2025.07.27
+## Author: liantian-cn
+## IconAtlas: questlog-questtypeicon-weekly
+## Dependencies: RLib
+## SavedVariables: RLib_VDH_SavedVar
+
+Settings.lua
+Macro.lua
+Main.lua
+VDH.lua
