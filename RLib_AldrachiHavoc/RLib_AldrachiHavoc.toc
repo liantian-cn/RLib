@@ -1,0 +1,11 @@
+
+## Interface: 110207
+## Title: |cffff5900R|cffffb300L|cfff0ff00i|cff96ff00b|cffff5900 奥达奇浩杰
+## Version: 2025.07.27
+## Author: liantian-cn
+## IconAtlas: questlog-questtypeicon-weekly
+## Dependencies: RLib
+## SavedVariables: RLib_AldrachiHavoc_SavedVar
+
+Settings.lua
+RLib_AldrachiHavoc.lua
