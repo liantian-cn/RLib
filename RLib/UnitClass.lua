@@ -460,6 +460,12 @@ function Unit:FuryDeficit()
     return self:FuryMax() - self:Fury()
 end
 
+--- 获取单位的符文能量（DK）
+--- @return number 当前符文能量
+function Unit:RunicPower()
+    return UnitPower(self:ID(), Enum.PowerType.RunicPower)
+end
+
 --- 创建一个新的 Unit 对象
 --- @param UnitID UnitToken 目标单位标识符
 --- @return table 返回一个新的 Unit 对象
