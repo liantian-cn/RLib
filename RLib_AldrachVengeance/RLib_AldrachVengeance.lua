@@ -3,6 +3,7 @@
 -- 获取插件名称和全局表
 local addonName, Rotation = ...
 local RL = RLib
+local Utils = RL.Utils
 local Player = RL.Player;
 local Target = RL.Target;
 local MouseOver = RL.MouseOver;
@@ -12,6 +13,49 @@ local Party = RL.Party
 local Plater = RL.Plater
 local Combat = RL.Combat
 
+RL.Rotations[addonName] = Rotation
+
+Rotation.Macros = {}
+local macro = Rotation.Macros;
+
+macro[1] = { ["title"] = "幽魂炸弹", ["macrotext"] = "/cast 幽魂炸弹\n/cast 恶魔尖刺" }
+macro[2] = { ["title"] = "怨念咒符脚下", ["macrotext"] = "/cast [@player] 怨念咒符" }
+macro[3] = { ["title"] = "恶魔尖刺", ["macrotext"] = "/cast 恶魔尖刺" }
+macro[4] = { ["title"] = "投掷利刃", ["macrotext"] = "/cast 投掷利刃" }
+macro[5] = { ["title"] = "排气臂铠护腕", ["macrotext"] = "/use 9" }
+macro[6] = { ["title"] = "收割者战刃", ["macrotext"] = "/cast 收割者战刃\n/cast 恶魔尖刺" }
+macro[7] = { ["title"] = "灵魂裂劈", ["macrotext"] = "/cast 灵魂裂劈\n/cast 恶魔尖刺" }
+macro[8] = { ["title"] = "就近灵魂裂劈", ["macrotext"] = "/cleartarget\n/targetenemy\n/cast 灵魂裂劈\n/targetlasttarget\n/cast 恶魔尖刺" }
+macro[9] = { ["title"] = "烈火烙印", ["macrotext"] = "/cast 烈火烙印" }
+macro[10] = { ["title"] = "烈焰咒符脚下", ["macrotext"] = "/use [@player] 烈焰咒符" }
+macro[11] = { ["title"] = "献祭光环", ["macrotext"] = "/cast 献祭光环\n/cast 恶魔尖刺" }
+macro[12] = { ["title"] = "瓦解焦点", ["macrotext"] = "/cast [@focus] 瓦解" }
+macro[13] = { ["title"] = "瓦解目标", ["macrotext"] = "/cast 瓦解" }
+macro[14] = { ["title"] = "破裂", ["macrotext"] = "/cast 破裂\n/cast 恶魔尖刺" }
+macro[15] = { ["title"] = "就近破裂", ["macrotext"] = "/cleartarget\n/targetenemy\n/cast 破裂\n/targetlasttarget\n/cast 恶魔尖刺" }
+macro[16] = { ["title"] = "邪能之刃", ["macrotext"] = "/cast 邪能之刃" }
+macro[17] = { ["title"] = "就近邪能之刃", ["macrotext"] = "/cleartarget\n/targetenemy\n/cast 邪能之刃\n/targetlasttarget\n/cast 恶魔尖刺" }
+macro[18] = { ["title"] = "邪能毁灭", ["macrotext"] = "/cast 邪能毁灭" }
+macro[19] = { ["title"] = "圣光虔敬魔典", ["macrotext"] = "/use 13" }
+macro[20] = { ["title"] = "13号饰品", ["macrotext"] = "/use 13" }
+macro[21] = { ["title"] = "14号饰品", ["macrotext"] = "/use 14" }
+macro[22] = { ["title"] = "恶魔变形", ["macrotext"] = "/cast 恶魔变形" }
+macro[23] = { ["title"] = "灵魂切削", ["macrotext"] = "/cast 灵魂切削" }
+macro[24] = { ["title"] = "瓦解鼠标", ["macrotext"] = "/cast [@mouseover] 瓦解" }
+
+
+function Rotation:Check()
+    local className, classFilename, classId = UnitClass("player")
+    local currentSpec = GetSpecialization()
+    if (classFilename == "DEMONHUNTER") and (currentSpec == 2) then
+        return true, 1
+    end
+    return false, 1
+end
+
+function Rotation:Init()
+    Utils.Print(addonName .. " Inited")
+end
 
 -- 排气臂铠可用
 local function checkVentingVambracesReady()
@@ -56,7 +100,7 @@ local function getSoulFragmentsNum()
 end
 
 function Rotation.Main()
-    local settings = RLib_VDH_SavedVar
+    local settings = RLib_AldrachVengeance_SavedVar
 
     -- 检查是否有抓握之血debuff，如果有则不进行操作
     if Player:DebuffExists(432031) or Player:DebuffExists("抓握之血") then
@@ -119,13 +163,13 @@ function Rotation.Main()
     end
 
     if Spell("瓦解"):CooldownUp() then
-        if MouseOver:Exists() and MouseOver:CanInterrupt() and MouseOver:AffectingCombat() and MouseOver:InRange(5) and MouseOver:CanAttack(Player) then
+        if MouseOver:Exists() and MouseOver:ShouldInterrupt() and MouseOver:AffectingCombat() and MouseOver:InRange(5) and MouseOver:CanAttack(Player) then
             return "cast", "瓦解鼠标"
         end
-        if Focus:Exists() and Focus:CanInterrupt() and Focus:AffectingCombat() and Focus:InRange(5) and Focus:CanAttack(Player) then
+        if Focus:Exists() and Focus:ShouldInterrupt() and Focus:AffectingCombat() and Focus:InRange(5) and Focus:CanAttack(Player) then
             return "cast", "瓦解焦点"
         end
-        if Target:Exists() and Target:CanInterrupt() and Target:AffectingCombat() and Target:InRange(5) and Target:CanAttack(Player) then
+        if Target:Exists() and Target:ShouldInterrupt() and Target:AffectingCombat() and Target:InRange(5) and Target:CanAttack(Player) then
             return "cast", "瓦解目标"
         end
     end

@@ -8,8 +8,8 @@ local category = Settings.RegisterVerticalLayoutCategory(addonName)
 Settings.RegisterAddOnCategory(category)
 
 
-if RLib_VDH_SavedVar == nil then
-    RLib_VDH_SavedVar = {}
+if RLib_AldrachVengeance_SavedVar == nil then
+    RLib_AldrachVengeance_SavedVar = {}
 end
 
 do
@@ -20,13 +20,13 @@ do
     local maxValue = 100
     local step = 1
     local function GetValue()
-        return RLib_VDH_SavedVar.ReaverGlaiveTargetHp or defaultValue
+        return RLib_AldrachVengeance_SavedVar.ReaverGlaiveTargetHp or defaultValue
     end
     local function SetValue(value)
-        RLib_VDH_SavedVar.ReaverGlaiveTargetHp = value
+        RLib_AldrachVengeance_SavedVar.ReaverGlaiveTargetHp = value
     end
-    if RLib_VDH_SavedVar.ReaverGlaiveTargetHp == nil then
-        RLib_VDH_SavedVar.ReaverGlaiveTargetHp = 10
+    if RLib_AldrachVengeance_SavedVar.ReaverGlaiveTargetHp == nil then
+        RLib_AldrachVengeance_SavedVar.ReaverGlaiveTargetHp = 10
     end
     local setting = Settings.RegisterProxySetting(category, variable, type(defaultValue), name, defaultValue, GetValue, SetValue)
     local tooltip = "使用收割者战刃的目标最低生命值"
@@ -43,13 +43,13 @@ do
     local maxValue = 30
     local step = 1
     local function GetValue()
-        return RLib_VDH_SavedVar.BurstTime or defaultValue
+        return RLib_AldrachVengeance_SavedVar.BurstTime or defaultValue
     end
     local function SetValue(value)
-        RLib_VDH_SavedVar.BurstTime = value
+        RLib_AldrachVengeance_SavedVar.BurstTime = value
     end
-    if RLib_VDH_SavedVar.BurstTime == nil then
-        RLib_VDH_SavedVar.BurstTime = 15
+    if RLib_AldrachVengeance_SavedVar.BurstTime == nil then
+        RLib_AldrachVengeance_SavedVar.BurstTime = 15
     end
     local setting = Settings.RegisterProxySetting(category, variable, type(defaultValue), name, defaultValue, GetValue, SetValue)
     local tooltip = "超过开怪时间，将不会使用邪能毁灭、怨念咒符、"
@@ -65,13 +65,13 @@ do
     local tooltip = "使用投掷利刃，好像没啥仇恨，用也白用"
     local defaultValue = false
     local function GetValue()
-        return RLib_VDH_SavedVar.THROW_GLAIVE or defaultValue
+        return RLib_AldrachVengeance_SavedVar.THROW_GLAIVE or defaultValue
     end
     local function SetValue(value)
-        RLib_VDH_SavedVar.THROW_GLAIVE = value
+        RLib_AldrachVengeance_SavedVar.THROW_GLAIVE = value
     end
-    if RLib_VDH_SavedVar.THROW_GLAIVE == nil then
-        RLib_VDH_SavedVar.THROW_GLAIVE = false
+    if RLib_AldrachVengeance_SavedVar.THROW_GLAIVE == nil then
+        RLib_AldrachVengeance_SavedVar.THROW_GLAIVE = false
     end
     local setting = Settings.RegisterProxySetting(category, variable, type(defaultValue), name, defaultValue, GetValue, SetValue)
     Settings.CreateCheckbox(category, setting, tooltip)
@@ -83,13 +83,13 @@ do
     local tooltip = "使用邪能毁灭，可能导致吃地板。"
     local defaultValue = true
     local function GetValue()
-        return RLib_VDH_SavedVar.USE_FEL_DEVASTATION or defaultValue
+        return RLib_AldrachVengeance_SavedVar.USE_FEL_DEVASTATION or defaultValue
     end
     local function SetValue(value)
-        RLib_VDH_SavedVar.USE_FEL_DEVASTATION = value
+        RLib_AldrachVengeance_SavedVar.USE_FEL_DEVASTATION = value
     end
-    if RLib_VDH_SavedVar.USE_FEL_DEVASTATION == nil then
-        RLib_VDH_SavedVar.USE_FEL_DEVASTATION = true
+    if RLib_AldrachVengeance_SavedVar.USE_FEL_DEVASTATION == nil then
+        RLib_AldrachVengeance_SavedVar.USE_FEL_DEVASTATION = true
     end
     local setting = Settings.RegisterProxySetting(category, variable, type(defaultValue), name, defaultValue, GetValue, SetValue)
     Settings.CreateCheckbox(category, setting, tooltip)
