@@ -22,7 +22,7 @@ macro[10] = { ["title"] = "盾击和复仇者之盾", ["macrotext"] = "/cast 复
 macro[11] = { ["title"] = "盾击和愤怒之锤", ["macrotext"] = "/cast 愤怒之锤\n/cast 正义盾击" }
 macro[12] = { ["title"] = "愤怒之锤", ["macrotext"] = "/cast 愤怒之锤\n/cast 正义盾击" }
 macro[13] = { ["title"] = "盾击和审判", ["macrotext"] = "/cast 审判\n/cast 正义盾击" }
-macro[14] = { ["title"] = "审判target", ["macrotext"] = "/cast 审判" }
+macro[14] = { ["title"] = "审判target", ["macrotext"] = "/cast 审判\n/cast 正义盾击" }
 macro[15] = { ["title"] = "圣洁武器", ["macrotext"] = "/castsequence reset=1.5 神圣壁垒," }
 macro[16] = { ["title"] = "复仇之怒", ["macrotext"] = "/cast [known:31884]  复仇之怒; [known:389539] 戒卫" }
 macro[17] = { ["title"] = "光荣时刻", ["macrotext"] = "/cast 光荣时刻" }
@@ -46,4 +46,4 @@ macro[34] = { ["title"] = "炽热防御者", ["macrotext"] = "/cast 炽热防御
 macro[35] = { ["title"] = "戒卫", ["macrotext"] = "/cast 戒卫\n/cast 正义盾击\n/cast 祝福之锤" }
 macro[36] = { ["title"] = "复仇者之盾mouseover", ["macrotext"] = "/cast [@mouseover] 复仇者之盾" }
 macro[37] = { ["title"] = "责难mouseover", ["macrotext"] = "/cast [@mouseover] 责难" }
-macro[38] = { ["title"] = "审判focus", ["macrotext"] = "/cast [@focus] 审判" }
+macro[38] = { ["title"] = "审判focus", ["macrotext"] = "/cast [@focus] 审判\n/cast 正义盾击" }

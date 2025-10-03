@@ -1,5 +1,4 @@
-
-## Interface: 110207
+## Interface: 110200,110205,110207
 ## Title: |cffff5900R|cffffb300L|cfff0ff00i|cff96ff00b|cffff5900 官方一键辅助
 ## Version: 2025.07.27
 ## Author: liantian-cn
